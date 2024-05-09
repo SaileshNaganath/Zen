@@ -1,0 +1,25 @@
+@use 'base';
+.footer-container{
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding:1% 1% 2% 1%;
+    height:50dvh;
+    background:url('../assets/bottom.webp');
+    background-repeat: no-repeat;
+}
+
+.footer-text{
+    color:black;
+    font-size: base.$content-size;
+}
+
+@include base.mobileView{
+    .footer-text{
+        color:base.$white-color;
+    }
+    .footer-container{
+        padding:4% 4% 14% 4%;
+    }
+}

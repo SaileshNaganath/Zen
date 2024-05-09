@@ -1,0 +1,51 @@
+@use 'base';
+.section-heading{
+    text-align: center;
+    font-size: base.$heading-size;
+    color:base.$text-color;
+    
+}
+.subscribe-form{
+    display: flex;
+    flex-direction: column;
+    padding-top:5%;
+}
+.form-label{
+    color:base.$text-color;
+    font-size:base.$content-size;
+    padding:2%;
+}
+.form-input{
+    border-radius: 10px;
+    background:#e8e8e4;
+    border:1px solid transparent ;
+    color: #5d5c78;
+    padding:1rem;
+}
+.checkbox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:3% 0;
+}
+.checkbox-label{
+    padding-left:2%;
+    color:base.$text-color;
+    span{
+        color:black;
+        text-decoration: underline;
+    }
+}
+.subscribe-button{
+    margin-top:3%;
+    padding:5%; 
+    border:none;
+    border-radius: 13px;
+    color: base.$button-color;
+    background-color: base.$secondary-button-color;
+    font-size: base.$caption-size;
+}
+.subscribe-button:hover{
+    background-color: base.$button-color;
+    color: base.$secondary-button-color;
+}

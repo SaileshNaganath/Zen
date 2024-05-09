@@ -1,0 +1,43 @@
+@use 'base';
+.outcome-container{
+    background-image: url('../assets/outcome-bg.webp');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.section-heading{
+    font-size: base.$heading-size;
+    color:base.$text-color;
+}
+.outcomes{
+    display: flex;
+    flex-direction: row;
+    padding:2rem;
+}
+.outcome__detail{
+    display:flex;
+    flex-direction: column;
+}
+.outcome__heading{
+    display: flex;
+    font-size: base.$heading-size ;
+    color:base.$text-color;
+    padding:5rem 1rem 1rem 1rem;
+}
+.outcome__caption{
+    padding:0 1rem;
+    color:base.$text-color;
+    font-weight:bolder;
+    font-size:base.$content-size;
+    text-wrap: wrap;
+}
+
+@include base.mobileView{
+    .outcome-container{
+        flex-direction: column;
+    }
+    .outcomes{
+        padding:8%;
+        flex-direction: column;
+        width: 100dvw;
+    }
+}

@@ -1,0 +1,42 @@
+@use 'base';
+.about-container{
+    display: flex;
+}
+.section-heading{
+    font-size: base.$heading-size;
+    color:base.$text-color;
+}
+.section-content{
+    font-size: base.$content-size;
+    color:base.$text-color;
+    padding:2rem 0;
+}
+.left-container1{
+    width:50dvw;
+    display: flex;
+    padding-left: 4rem;
+    justify-content: center;
+    align-items:center;
+}
+.right-container1{
+    width:50dvw;
+    display: flex;
+    padding-right: 4rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items:flex-start;
+}
+
+.content-image{
+    width:100%;
+}
+
+@include base.mobileView{
+    .about-container{
+        flex-direction: column;
+    }
+    .left-container1,.right-container1{
+        padding:8%;
+        width: 100dvw;
+    }
+}

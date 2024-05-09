@@ -1,0 +1,37 @@
+@use 'base';
+.feature-container{
+    background-image: url('../assets/features-bg.webp');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.section-heading{
+    font-size: base.$heading-size;
+    color:base.$text-color;
+}
+.features{
+    display: flex;
+}
+.feature__detail{
+    display:flex;
+    flex-direction:column;
+    padding:3rem 3rem;
+}
+.feature__caption{
+    text-align: center;
+    padding:1rem 0;
+    color:base.$text-color;
+    font-weight:bolder;
+    font-size: base.$caption-size ;
+    text-wrap: wrap;
+}
+
+@include base.mobileView{
+    .feature-container{
+        flex-direction: column;
+    }
+    .features{
+        padding:8%;
+        flex-direction: column;
+        width: 100dvw;
+    }
+}

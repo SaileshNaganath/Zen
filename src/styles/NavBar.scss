@@ -1,0 +1,93 @@
+@use 'base';
+
+.navbar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top:3rem;
+    height:8dvh;
+    background-color:base.$button-color;
+}
+.logo-container{
+    display: flex;
+    max-width:10dvw;
+    flex-direction: column;
+    justify-content: center;
+
+    padding-left:4rem;
+    align-items: center;
+}
+.logo-img{
+    height:75%;
+    width:75%;
+}
+.logo-name{
+    font-size: base.$heading-size;
+    color:base.$text-color;
+}
+.navbar_list{
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+.navbar__heading{
+    padding:0 2rem;
+    font-size: large;
+    font-weight:800;
+    color:base.$text-color;
+}
+.navbar__heading:hover{
+    color:black;
+    text-decoration: underline;
+}
+.navbar-wave{
+    height:10rem;
+    background:url('../assets/top.webp');
+    background-repeat: no-repeat;
+}
+.menu{
+    display:none;
+}
+
+@include base.mobileView{
+    .navbar{
+        height:15dvh;
+        width:100dvw;
+        padding:1rem;
+        display:flex;
+        flex-direction: column;
+        background-color:base.$button-color;
+    }
+    .logo-container{
+        padding:0;
+    }
+    .logo-img{
+        height:100%;
+        width:100%;
+    }
+    .logo-name{
+        font-size: large;
+    }
+    .navbar-wave{
+        display:none;
+    }
+    .menu{
+        display:flex;
+        position: absolute; 
+      top:2rem;
+    right: 2rem; 
+    }
+    .navbar_list{
+        display:none;
+        background-color:base.$button-color;
+    }
+    .mobile{
+        display:flex;
+        flex-direction:column;
+        align-items: center;
+        position:static;
+        padding: 10% 30%;
+        border-radius:18px;
+        z-index:1;
+    }
+}

@@ -1,0 +1,13 @@
+$text-color: #5d5c78;
+$white-color:#ffffff;
+$secondary-button-color:#64637E;
+$button-color:#fbd3ca;
+$heading-size: 2.5rem;
+$caption-size:1.5rem;
+$content-size:1rem;
+
+@mixin mobileView{
+    @media(max-width :769px){
+        @content
+    }
+}
