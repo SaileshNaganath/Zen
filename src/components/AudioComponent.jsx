@@ -1,159 +1,149 @@
-import { useState, useEffect,useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useStatus } from '../context/StatusContext'; 
 import '../styles/BetaAbout.scss';
 
-const AudioComponent = ({ device_info }) => {
-  const { currentAction, next_step, is_active_action ,status ,setStatus} = useStatus(); 
+const AudioComponent = ({ deviceInfo }) => {
 
+
+  const MAX_COUNT = 4;
+  const MAX_AMPLITUDE = 255; // Adjust this based on the maximum amplitude you're receiving
+	const LOG_BASE = 10; // Adjust this for the desired logarithmic scaling
+
+  const { currentAction, next_step, is_active_action ,status ,setStatus} = useStatus(); 
+  const [error,setError] = useState(null);
   
-  const [canvas, setCanvas] = useState(null);
-  const [analyser, setAnalyser] = useState(null);
-  const [dataArray, setDataArray] = useState(null);
-  const [bufferLength, setBufferLength] = useState(null);
-  const [audioCtx, setAudioCtx] = useState(null);
-  const [avg, setAvg] = useState(0);
+  const [threshold, setThreshold] = useState(30);
   const [counter, setCounter] = useState(0);
   const [isCounting, setIsCounting] = useState(false);
   const [instructions, setInstructions] = useState("Press start when you are ready to begin. You'll do great!");
-  const [threshold, setThreshold] = useState(30);
-  const [intervalId, setIntervalId] = useState(null);
-  const [error,setError] = useState(null);
-  const MAX_COUNT = 4;
-  const MAX_AMPLITUDE = 255;
-  const LOG_BASE = 10;
 
+  const canvasRef = useRef(null);
+  const intervalRef = useRef(null);
+  const audioCtxRef = useRef(null);
+  const analyserRef = useRef(null);
+  const dataArrayRef = useRef(null);
+  const avgRef = useRef(0);
 
   useEffect(() => {
-    const logScale = (value) => {
-      return Math.log(value + 1) / Math.log(LOG_BASE);
+    return () => {
+      stopCounting();
     };
+  }, []);
 
-    const getStream = async () => {
+  const logScale = value => {
+    return Math.log(value + 1) / Math.log(LOG_BASE);
+  };
+
+  useEffect(() => {
+    let stream;
+    const init = async () => {
       try {
-        let constraints = { audio: true };
-        if (device_info?.deviceId) {
-          constraints = { audio: { deviceId: { exact: device_info.deviceId } } };
-        }
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-  
-        if (audioCtx && audioCtx.state !== 'closed') {
-          audioCtx.close();
-        }
-        const ctx = new AudioContext();
-        const source = ctx.createMediaStreamSource(stream);
-        const ana = ctx.createAnalyser();
-        ana.fftSize = 2048;
-        const buffer = ana.frequencyBinCount;
-        const dataArray = new Uint8Array(buffer);
-        source.connect(ana);
-  
-        setAudioCtx(ctx);
-        setAnalyser(ana);
-        setDataArray(dataArray);
-        setBufferLength(buffer);
-  
-        return source;
-      }catch(error){
-        setError(error); 
-      }     
- }
-  getStream();
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: { deviceId: deviceInfo.deviceId }
+        });
+        audioCtxRef.current = new AudioContext();
+        const source = audioCtxRef.current.createMediaStreamSource(stream);
+        analyserRef.current = audioCtxRef.current.createAnalyser();
+        analyserRef.current.fftSize = 2048;
+        const bufferLength = analyserRef.current.frequencyBinCount;
+        dataArrayRef.current = new Uint8Array(bufferLength);
+        source.connect(analyserRef.current);
+        drawMeter();
+      } catch (error) {
+        console.error('Error accessing user media:', setError(error));
+      }
+    };
+    init();
+
     const drawMeter = () => {
-      if (canvas && analyser) {
+      const canvas = canvasRef.current;
+      if (canvas) {
         const context = canvas.getContext('2d');
         if (context) {
-          analyser.getByteFrequencyData(dataArray);
+          analyserRef.current.getByteFrequencyData(dataArrayRef.current);
           context.clearRect(0, 0, canvas.width, canvas.height);
-          let sum = dataArray.reduce((acc, val) => acc + val, 0);
-          let average = sum / bufferLength;
-
+          const sum = dataArrayRef.current.reduce((acc, val) => acc + val, 0);
+          const average = sum / dataArrayRef.current.length;
           const scaledAverage = (logScale(average) / logScale(MAX_AMPLITUDE)) * canvas.width;
-          setAvg(scaledAverage);
-
-          context.shadowColor = '#3BCA35';
+  
+          avgRef.current = scaledAverage;
+          context.shadowColor = '#64637E';
           context.shadowBlur = 15;
           context.shadowOffsetX = 5;
           context.shadowOffsetY = -2;
-          context.fillStyle = '#3BCA35';
+          context.fillStyle = '#64637E';
           context.fillRect(0, 0, scaledAverage, canvas.height + 10);
           requestAnimationFrame(drawMeter);
         }
       }
     };
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      if (audioCtxRef.current) {
+        audioCtxRef.current.close();
+      }
+      stopCounting();
+    };
+  }, [deviceInfo]);
 
-    getStream().then(() => {
-      drawMeter();
-    });
+  useEffect(() => {
+    if (isCounting) {
+      if (avgRef.current > threshold) {
+        setStatus('BREATHING');
+      } else {
+        setStatus('READY');
+      }
+    }
+  }, [isCounting, threshold,setStatus]);
 
-   
-  }, [canvas, device_info?.deviceId,analyser, audioCtx, bufferLength, dataArray]);
+	
 
-  const nextStepCount = () => {
-    setCounter(0);
-    next_step();
-  };
 
   const checkAndCount = () => {
-    // Define checkAndCount logic here
     if (isCounting) {
-      const dynamicValue = avg;
+      const dynamicValue = avgRef.current;
       if (is_active_action()) {
         if (dynamicValue > threshold) {
-          setCounter(counter + 1);
-          setInstructions("Nice! you're doin' a great job. 👍");
+          setCounter(prevCounter => prevCounter + 1);
+          setInstructions("Nice! You're doin' a great job. 👍");
         } else {
-          setInstructions(`${currentAction?.toLowerCase()} with your mouth near the microphone`);
+          setInstructions(`${currentAction} with your mouth near the microphone`);
         }
       } else {
         if (dynamicValue < threshold) {
-          setCounter(counter + 1);
-          setInstructions(`Way to do that ${currentAction?.toLowerCase()}`);
+          setCounter(prevCounter => prevCounter + 1);
+          setInstructions(`Way to do that ${currentAction}`);
         } else {
-          setInstructions(`${currentAction?.toLowerCase()} and try not to make any noise`);
+          setInstructions(`${currentAction} and try not to make any noise`);
         }
       }
-  
+
       if (counter >= MAX_COUNT) {
-        nextStepCount();
+        setCounter(0);
+        next_step();
       }
     }
   };
-  
-  useEffect(() => {
-    if (isCounting) {
-      if (avg > threshold) {
-        status === 'BREATHING';
-      } else {
-        status !=='BREATHING';
-      }
-    }
-  }, [isCounting, avg, threshold,status]);
-
-  useEffect(() => {
-    return () => clearInterval(intervalId);
-  }, [intervalId]);
 
   const startCounting = () => {
     setCounter(0);
-    setIsCounting(!isCounting);
+    setIsCounting(true);
     setStatus('BREATHING');
-    const newIntervalId = setInterval(checkAndCount, 1000);
-    setIntervalId(newIntervalId);
     next_step();
+    intervalRef.current = setInterval(()=>{checkAndCount()}, 1000);
   };
+
   
-const stopCounting = useCallback(()=>{
-  if(intervalId){
-    clearInterval(intervalId);
-    setIntervalId(null);
-    setIsCounting(!isCounting);
-}
-},[intervalId,isCounting])
-  
-useEffect(() => {
-  stopCounting();    
-}, [stopCounting]);
+
+  const stopCounting = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
 
   const nextButton = ()=>{
     setStatus('READY');
@@ -166,7 +156,7 @@ useEffect(() => {
         <p>Audio Failed to load</p>
       ) : (
         <div>
-        <canvas width="300" height="20" ref={setCanvas} className="meter" />
+        <canvas width="300" height="20" ref={canvasRef} className="meter" />
         <input type="range" name="threshold" id="threshold" value={threshold} onChange={(e) => setThreshold(e.target.value)} min={0} max={200} />
         <p className="feeling-label">
           Adjust the threshold to your mic level. Drag the slider to a level you can maintain while inhaling or exhaling 
@@ -206,8 +196,6 @@ useEffect(() => {
 };
 
 AudioComponent.propTypes = {
-    device_info: PropTypes.shape({
-      deviceId: PropTypes.string.isRequired // Validate deviceId as a string and make it required
-    })
-  };
+    deviceInfo: PropTypes.string.isRequired
+};
 export default AudioComponent;

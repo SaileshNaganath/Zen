@@ -9,8 +9,10 @@ const StatusProvider = ({ children }) => {
   const [currentAction, setCurrentAction] = useState(null);
   const { rounds,count_round } = useRounds();
 
-  const get_next_state = (currentStatus) => {
-    switch (currentStatus) {
+  const get_next_state = (currentAction) => {
+    switch (currentAction) {
+      case null:
+        return 'INHALE';
       case 'INHALE':
         return 'HOLD';
       case 'HOLD':
@@ -27,8 +29,6 @@ const StatusProvider = ({ children }) => {
         }
         return 'INHALE';
       }
-      case null:
-        return 'INHALE';
       default:
         throw new Error('Invalid status');
     }
@@ -37,26 +37,21 @@ const StatusProvider = ({ children }) => {
 
    
     const next_step = () => {
-      setCurrentAction((state) => {
-        const nextState = get_next_state(state);
-        return nextState;
-      });
+      setCurrentAction((state) => get_next_state(state));
     };
 
 
   const is_active_action = () => {
-
     return ['INHALE', 'EXHALE'].includes(currentAction || '');
   };
 
   useEffect(() => {
     // Subscribe to any necessary events or state changes
-    // For example, you can log the status whenever it changes
     console.log('Status changed:', status);
   }, [status]);
 
   return (
-    <StatusContext.Provider value={{ status, is_active_action ,currentAction,next_step,setStatus}}>
+    <StatusContext.Provider value={{ status,setStatus, is_active_action ,currentAction,next_step}}>
       {children}
     </StatusContext.Provider>
   );
