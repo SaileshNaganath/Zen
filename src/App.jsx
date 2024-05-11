@@ -1,28 +1,23 @@
-
-import './App.scss'
-import About from './components/About'
-import Features from './components/Features'
-import Footer from './components/Footer'
-import Hero from './components/Hero'
-import NavBar from './components/NavBar'
-import Outcome from './components/Outcome'
-import Plans from './components/Plans'
-import Subscribe from './components/Subscribe'
+import { BrowserRouter,Routes,Route } from "react-router-dom";
+import Landing from "./LandingPage";
+import Beta from "./Beta";
+import NavBar from "./components/NavBar";
+import Footer from "./components/Footer";
+import BoxBreathe from "./BoxBreathe";
 
 function App() {
 
 
   return (
-    <div className='mainApp'>
+    <BrowserRouter>
       <NavBar/>
-      <Hero/>
-      <About/>
-      <Features/>
-      <Outcome/>
-      <Plans/>
-      <Subscribe/>
+      <Routes>
+        <Route path='/' element={<Landing/>}/>
+        <Route path='/beta' element={<Beta/>}/>
+        <Route path='/beta-feature' element={<BoxBreathe/>}/>
+      </Routes>
       <Footer/>
-    </div>
+    </BrowserRouter>
   )
 }
 

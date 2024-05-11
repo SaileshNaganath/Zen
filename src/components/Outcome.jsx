@@ -30,12 +30,12 @@ const Outcome = () => {
     </h1>
     <div className="outcomes">
     {outcomeDetail.map((item)=>(
-      <>
+
         <div className="outcome__detail" key={item.id}>
           <p className="outcome__heading">{item.heading}</p>
           <p className="outcome__caption">{item.content}</p>
         </div>
-      </>
+      
     ))}
     </div>
     </div>

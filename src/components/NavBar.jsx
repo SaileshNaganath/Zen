@@ -49,11 +49,11 @@ const NavBar = () => {
     </div>
     <span className={`navbar_list ${open ? 'web': `mobile`}`}>
     {navLinks.map((item)=>(
-      <>
+    
         <div className="navbar__detail" key={item.id} onClick={()=>setOpen(!open)}>
           <a className="navbar__heading" href={item.link}>{item.heading}</a>
         </div>
-      </>
+    
     ))}
     </span>
 </nav>

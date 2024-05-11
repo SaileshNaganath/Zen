@@ -30,12 +30,12 @@ const Features = () => {
     </h1>
     <div className="features">
     {featureDetail.map((item,index)=>(
-      <>
+      
         <div className='feature__detail' key={index}>
         <img src={item.img}/>
           <p className="feature__caption">{item.content}</p>
         </div>
-      </>
+      
     ))}
     </div>
    

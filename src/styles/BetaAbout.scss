@@ -1,0 +1,130 @@
+@use 'base';
+.betaAbout-container{
+    display: flex;
+    flex-direction: column;
+}
+.section-heading{
+    font-size: base.$heading-size;
+    color:base.$text-color;
+}
+
+.section-content-main,.section-content1{
+    font-size: base.$content-size;
+    color:base.$text-color;
+    padding:2rem 0;
+    text-align: center;
+}
+.section-content1{
+    font-size: base.$caption-size;
+}
+
+.container1{
+    width:100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.secondary-button1{
+    background-color: base.$secondary-button-color;
+    border-radius: 13px;
+    width:100%;
+    border:none;
+    padding:1rem 3rem;
+    color:base.$button-color;
+    letter-spacing: 4px;
+}
+.secondary-button1:hover{
+    background-color:base.$button-color;
+    color: base.$secondary-button-color;
+}
+
+.status-heading{
+    font-size: base.$content-size;
+    text-align: center;
+    color:base.$text-color;
+    padding:1rem;
+}
+
+.feeling_heading{
+    font-size:base.$heading-size;
+    color:base.$text-color;
+    text-align: center;
+}
+.feeling-label{
+    padding:5%;
+    font-size: base.$content-size;
+    color:base.$text-color;
+    text-align: center;
+}
+.feeling-button-container{
+    display:flex;
+    flex-direction: row;
+    align-items:center;
+    justify-content: center;
+    padding-top: 4%;
+}
+.feeling-button-span{
+    margin:1.5rem;
+}
+.feeling-button{
+    cursor:pointer;
+    background-color: transparent;
+    padding:1rem 4rem;
+    border:2px solid;
+    border-radius: 13px ;
+    font-size: base.$caption-size;
+}
+
+.green-color{
+    border-color: green;
+    color:green;
+}
+.green-color:hover{
+    background-color: green;
+    border:2px solid transparent;
+    color:base.$white-color;
+}
+.orange-color{
+    border-color:orange;
+    color:orange;
+}
+.orange-color:hover{
+    background-color: orange;
+    border:2px solid transparent;
+    color:base.$white-color;
+}
+.red-color {
+    border-color: red;
+    color:red;
+  }
+  .red-color:hover{
+    background-color: red;
+    border:2px solid transparent;
+    color:base.$white-color;
+}
+ .audio-selection{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+ } 
+ .meter {
+    background: #fff;
+    border-radius: 5px;
+    width: 100%;
+}
+
+@include base.mobileView{
+   
+    .container1,.boxPage-container{
+     padding:8%;
+    }
+    .feeling-button-container{
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+   
+    
+ }

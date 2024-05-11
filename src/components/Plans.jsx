@@ -44,7 +44,7 @@ const Plans = () => {
     </h1>
     <div className="plans">
     {outcomeDetail.map((item)=>(
-      <>
+      
         <div className="plan__detail" key={item.id}>
           <p className="plan__heading">{item.heading}</p>
           <ul className="plan__list">
@@ -56,7 +56,7 @@ const Plans = () => {
           <p className='plan__yearPrice'>{item.yearPrice}$/year</p>
           <button className='plan__button'>{item.buttonName}</button>
         </div>
-      </>
+      
     ))}
     </div>
     </div>
