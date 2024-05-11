@@ -111,13 +111,29 @@
  } 
  .meter {
     background: #fff;
+    border:1px solid #565656;
     border-radius: 5px;
     width: 100%;
 }
-
+#threshold{
+    width:100%
+}
+.next-button{
+    margin-right:1rem;
+    color: base.$button-color;
+    border-radius: 13px;
+    border:none;
+    padding:1rem 3rem;
+    background-color:base.$text-color;
+    letter-spacing: 4px;
+}
+.next-button:hover{
+    color:base.$text-color;
+    background-color: base.$button-color;
+}
 @include base.mobileView{
    
-    .container1,.boxPage-container{
+    .container1,.boxPage-container,.audioContainer{
      padding:8%;
     }
     .feeling-button-container{

@@ -62,7 +62,7 @@ const AudioComponent = ({ device_info }) => {
       setBufferLength(buffer);
     
  }
- 
+
     const drawMeter = () => {
       if (canvas && analyser) {
         const context = canvas.getContext('2d');
@@ -75,11 +75,11 @@ const AudioComponent = ({ device_info }) => {
           const scaledAverage = (logScale(average) / logScale(MAX_AMPLITUDE)) * canvas.width;
           setAvg(scaledAverage);
 
-          context.shadowColor = '#396cd8';
+          context.shadowColor = '#3BCA35';
           context.shadowBlur = 15;
           context.shadowOffsetX = 5;
           context.shadowOffsetY = -2;
-          context.fillStyle = '#396cd8';
+          context.fillStyle = '#3BCA35';
           context.fillRect(0, 0, scaledAverage, canvas.height + 10);
           requestAnimationFrame(drawMeter);
         }
@@ -92,11 +92,7 @@ const AudioComponent = ({ device_info }) => {
       drawMeter();
     });
 
-    return () => {
-      if (audioCtx) {
-        audioCtx.close();
-      }
-    };
+   
   }, [canvas, device_info?.deviceId,analyser, audioCtx, bufferLength, dataArray]);
 
   const nextStepCount = useCallback(() => {
@@ -161,11 +157,11 @@ const AudioComponent = ({ device_info }) => {
     next_step();
   }
   return (
-    <>
+    <div className='audioContainer'>
       <div>
         <canvas width="300" height="20" ref={setCanvas} className="meter" />
         <input type="range" name="threshold" id="threshold" value={threshold} onChange={(e) => setThreshold(e.target.value)} min={0} max={200} />
-        <p className="note">
+        <p className="feeling-label">
           Adjust the threshold to your mic level. Drag the slider to a level you can maintain while inhaling or exhaling 
         </p>
  
@@ -175,7 +171,7 @@ const AudioComponent = ({ device_info }) => {
         <p>{instructions}</p>
         <button 
           // disabled={status === 'BREATHING'} 
-          className="start" 
+          className="next-button" 
           onClick={startCounting}
         >
           {status === 'BREATHING' ? (
@@ -192,11 +188,11 @@ const AudioComponent = ({ device_info }) => {
       )}
 
       {status === 'AUDIO_DETECTED' &&(
-          <button className="start" onClick={()=>nextButton()}>Next</button>
+          <button className="next-button" onClick={()=>nextButton()}>Next</button>
         )
       }
      
-    </>
+    </div>
   );
 };
 
