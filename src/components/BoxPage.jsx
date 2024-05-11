@@ -67,15 +67,17 @@ const BoxPage = () => {
 }
   return (
     <div className='boxPage-container'>
-      <p className='status-heading'>STATUS:  {status}</p>
+     
 
       
       {status === 'SUCCESS' ? (
-        <h2>Im so proud of you</h2>
+        <h1 className='success_heading'>Congratulations ! <br/>You have now reduced your stress by 25%</h1>
       ) : (
         <>
+        
           {roundsActive ? (
             <>
+            <p className='status-heading'>STATUS:  {status}</p>
               {['READY', 'BREATHING'].includes(status) ? (
                 <Rounds/>
               ) : (

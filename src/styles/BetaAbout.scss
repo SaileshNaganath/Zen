@@ -25,7 +25,12 @@
     justify-content: center;
     align-items: center;
 }
-
+.audioContainer,.boxPage-container{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 .secondary-button1{
     background-color: base.$secondary-button-color;
     border-radius: 13px;
@@ -49,6 +54,11 @@
 
 .feeling_heading{
     font-size:base.$heading-size;
+    color:base.$text-color;
+    text-align: center;
+}
+.success_heading{
+    font-size:base.$caption-size;
     color:base.$text-color;
     text-align: center;
 }
@@ -119,7 +129,7 @@
     width:100%
 }
 .next-button{
-    margin-right:1rem;
+
     color: base.$button-color;
     border-radius: 13px;
     border:none;

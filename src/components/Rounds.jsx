@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRounds } from '../context/RoundsContext';
+import '../styles/BetaAbout.scss';
 
 const Rounds = () => {
   const { rounds } = useRounds();
@@ -15,11 +16,9 @@ const Rounds = () => {
 
   return (
     <div>
-      <h2>Rounds</h2>
-      <div className="rounds">
-        <p>Remaining Rounds: {totalRounds - completedRounds}</p>
-
-      </div>
+      <h1 className='feeling_heading'>Rounds</h1>
+      <br/>
+        <p className='status-heading'>Remaining Rounds: {totalRounds - completedRounds}</p>
     </div>
   );
 };

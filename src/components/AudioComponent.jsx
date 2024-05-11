@@ -18,19 +18,11 @@ const AudioComponent = ({ device_info }) => {
   const [instructions, setInstructions] = useState("Press start when you are ready to begin. You'll do great!");
   const [threshold, setThreshold] = useState(30);
   const [intervalId, setIntervalId] = useState(null);
-
+  const [error,setError] = useState(null);
   const MAX_COUNT = 4;
   const MAX_AMPLITUDE = 255;
   const LOG_BASE = 10;
 
-  useEffect(() => {
-
-      if(intervalId){
-        clearInterval(intervalId);
-        setIntervalId(null);
-        setIsCounting(false);
-  }
-}, [intervalId]);
 
   useEffect(() => {
     const logScale = (value) => {
@@ -38,31 +30,35 @@ const AudioComponent = ({ device_info }) => {
     };
 
     const getStream = async () => {
-
-      let constraints = { audio: true };
-      if (device_info?.deviceId) {
-        constraints = { audio: { deviceId: { exact: device_info.deviceId } } };
-      }
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-
-      if (audioCtx && audioCtx.state !== 'closed') {
-        audioCtx.close();
-      }
-      const ctx = new AudioContext();
-      const source = ctx.createMediaStreamSource(stream);
-      const ana = ctx.createAnalyser();
-      ana.fftSize = 2048;
-      const buffer = ana.frequencyBinCount;
-      const dataArray = new Uint8Array(buffer);
-      source.connect(ana);
-
-      setAudioCtx(ctx);
-      setAnalyser(ana);
-      setDataArray(dataArray);
-      setBufferLength(buffer);
-    
+      try {
+        let constraints = { audio: true };
+        if (device_info?.deviceId) {
+          constraints = { audio: { deviceId: { exact: device_info.deviceId } } };
+        }
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+  
+        if (audioCtx && audioCtx.state !== 'closed') {
+          audioCtx.close();
+        }
+        const ctx = new AudioContext();
+        const source = ctx.createMediaStreamSource(stream);
+        const ana = ctx.createAnalyser();
+        ana.fftSize = 2048;
+        const buffer = ana.frequencyBinCount;
+        const dataArray = new Uint8Array(buffer);
+        source.connect(ana);
+  
+        setAudioCtx(ctx);
+        setAnalyser(ana);
+        setDataArray(dataArray);
+        setBufferLength(buffer);
+  
+        return source;
+      }catch(error){
+        setError(error); 
+      }     
  }
-
+  getStream();
     const drawMeter = () => {
       if (canvas && analyser) {
         const context = canvas.getContext('2d');
@@ -86,8 +82,6 @@ const AudioComponent = ({ device_info }) => {
       }
     };
 
- 
-
     getStream().then(() => {
       drawMeter();
     });
@@ -95,12 +89,12 @@ const AudioComponent = ({ device_info }) => {
    
   }, [canvas, device_info?.deviceId,analyser, audioCtx, bufferLength, dataArray]);
 
-  const nextStepCount = useCallback(() => {
+  const nextStepCount = () => {
     setCounter(0);
     next_step();
-  }, [next_step]);
+  };
 
-  const checkAndCount = useCallback(() => {
+  const checkAndCount = () => {
     // Define checkAndCount logic here
     if (isCounting) {
       const dynamicValue = avg;
@@ -124,7 +118,7 @@ const AudioComponent = ({ device_info }) => {
         nextStepCount();
       }
     }
-  }, [isCounting, avg, threshold, is_active_action,currentAction, counter, setCounter, setInstructions, nextStepCount]);
+  };
   
   useEffect(() => {
     if (isCounting) {
@@ -134,7 +128,7 @@ const AudioComponent = ({ device_info }) => {
         status !=='BREATHING';
       }
     }
-  }, [isCounting, avg, threshold,status,checkAndCount]);
+  }, [isCounting, avg, threshold,status]);
 
   useEffect(() => {
     return () => clearInterval(intervalId);
@@ -142,23 +136,36 @@ const AudioComponent = ({ device_info }) => {
 
   const startCounting = () => {
     setCounter(0);
-    setIsCounting(true);
+    setIsCounting(!isCounting);
     setStatus('BREATHING');
     const newIntervalId = setInterval(checkAndCount, 1000);
     setIntervalId(newIntervalId);
     next_step();
   };
   
-
+const stopCounting = useCallback(()=>{
+  if(intervalId){
+    clearInterval(intervalId);
+    setIntervalId(null);
+    setIsCounting(!isCounting);
+}
+},[intervalId,isCounting])
   
+useEffect(() => {
+  stopCounting();    
+}, [stopCounting]);
 
   const nextButton = ()=>{
     setStatus('READY');
     next_step();
   }
+
   return (
     <div className='audioContainer'>
-      <div>
+     {error ? (
+        <p>Audio Failed to load</p>
+      ) : (
+        <div>
         <canvas width="300" height="20" ref={setCanvas} className="meter" />
         <input type="range" name="threshold" id="threshold" value={threshold} onChange={(e) => setThreshold(e.target.value)} min={0} max={200} />
         <p className="feeling-label">
@@ -166,9 +173,11 @@ const AudioComponent = ({ device_info }) => {
         </p>
  
       </div>
+      )}
+      
       {(status === 'READY' || status === 'BREATHING') && (
         <>
-        <p>{instructions}</p>
+        <p className="feeling-label">{instructions}</p>
         <button 
           // disabled={status === 'BREATHING'} 
           className="next-button" 
