@@ -6,9 +6,9 @@ import AudioComponent from './AudioComponent';
 import '../styles/BetaAbout.scss';
 
 const buttonMap = [
-    {id:3, name:'Slight Stress',color:'green'},
-    {id:4, name:'Normal Stress',color:'orange'},
-    {id:5, name:'Extreme Stress',color:'red' }
+    {id:2, name:'Slight Stress',color:'green'},
+    {id:3, name:'Normal Stress',color:'orange'},
+    {id:4, name:'Extreme Stress',color:'red' }
 ]
 const BoxPage = () => {
   const [audioInputs, setAudioInputs] = useState([]);
@@ -71,7 +71,12 @@ const BoxPage = () => {
 
       
       {status === 'SUCCESS' ? (
+        <>
         <h1 className='success_heading'>Congratulations ! <br/>You have now reduced your stress by 25%</h1>
+  
+    <dotlottie-player src="https://lottie.host/87039642-73bc-489b-ad1c-4d5548031077/CVrTtIp4IZ.json" background="transparent" speed="0.5" style={{width: "300px", height: "300px"}} loop autoplay/>
+        </>
+        
       ) : (
         <>
         

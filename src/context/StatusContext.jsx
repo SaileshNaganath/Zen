@@ -51,7 +51,7 @@ const StatusProvider = ({ children }) => {
   }, [status]);
 
   return (
-    <StatusContext.Provider value={{ status,setStatus, is_active_action ,currentAction,next_step}}>
+    <StatusContext.Provider value={{ status,setStatus, is_active_action ,currentAction,setCurrentAction,next_step}}>
       {children}
     </StatusContext.Provider>
   );

@@ -1,24 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRounds } from '../context/RoundsContext';
+import { useStatus } from '../context/StatusContext'; 
 import '../styles/BetaAbout.scss';
 
 const Rounds = () => {
   const { rounds } = useRounds();
-  const [completedRounds, setCompletedRounds] = useState(rounds[0]);
-  const [totalRounds, setTotalRounds] = useState(rounds[1]);
+  const {setStatus} = useStatus();
 
   useEffect(() => {
-    setCompletedRounds(rounds[0]);
-    setTotalRounds(rounds[1]);
-  }, [rounds]);
+    // Check if remaining rounds are zero or less
+    const remainingRounds = rounds[1] - rounds[0];
+    if (remainingRounds <= 0) {
+      setStatus('SUCCESS');
+    }
+  }, [rounds, setStatus]);
 
-
+  // Calculate remaining rounds dynamically
+  const remainingRounds = rounds[1] - rounds[0];
 
   return (
     <div>
       <h1 className='feeling_heading'>Rounds</h1>
       <br/>
-        <p className='status-heading'>Remaining Rounds: {totalRounds - completedRounds}</p>
+        <p className='status-heading'>Remaining Rounds: {remainingRounds}</p>
     </div>
   );
 };
