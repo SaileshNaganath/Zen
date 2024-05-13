@@ -41,3 +41,4 @@ We're committed to continuously improving our platform to better serve our users
 
 ![Landing Page](https://github.com/SaileshNaganath/Zen/blob/main/public/Screen%20Shot%202024-05-09%20at%2010.09.47%20PM.png)
 
+![Feature Page](https://github.com/SaileshNaganath/Zen/blob/main/public/screencapture-zen-peace-vercel-app-beta-feature-2024-05-13-16_49_08.png)
