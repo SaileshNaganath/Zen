@@ -1,57 +1,54 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useRounds } from './RoundsContext';
 
 const StatusContext = React.createContext();
 
 const StatusProvider = ({ children }) => {
-  const [status, setStatus] = useState('INITIAL');
+
+
+  const [status, setStatus] = useState('READY');
   const [currentAction, setCurrentAction] = useState(null);
   const { rounds,count_round } = useRounds();
 
-  const get_next_state = (currentAction) => {
-    switch (currentAction) {
-      case null:
-        return 'INHALE';
-      case 'INHALE':
-        return 'HOLD';
-      case 'HOLD':
-        return 'EXHALE';
-      case 'EXHALE':
-        return 'WAIT';
-      case 'WAIT': {
+const nextStep = (currentAction) => {
+  switch (currentAction) {
+    case null:
+      setCurrentAction('INHALE');
+      break;
+    case 'INHALE':
+      setCurrentAction('HOLD');
+      break;
+    case 'HOLD':
+      setCurrentAction('EXHALE');
+      break;
+    case 'EXHALE':
+      setCurrentAction('WAIT');
+      break;
+    case 'WAIT':
+      {
         count_round();
         const completed_rounds = rounds[0];
         const total_rounds = rounds[1];
         if (completed_rounds === total_rounds) {
           setStatus('SUCCESS');
-          return null;
+          setCurrentAction(null);
+          
+        } else {
+          setCurrentAction('INHALE');
         }
-        return 'INHALE';
+        break;
       }
-      default:
-        throw new Error('Invalid status');
-    }
-  };
+     
+    default:
+      console.error('Invalid status:', currentAction);
+      break;
+  }
+};
 
-
-   
-    const next_step = () => {
-      setCurrentAction((state) => get_next_state(state));
-    };
-
-
-  const is_active_action = () => {
-    return ['INHALE', 'EXHALE'].includes(currentAction || '');
-  };
-
-  useEffect(() => {
-    // Subscribe to any necessary events or state changes
-    console.log('Status changed:', status);
-  }, [status]);
 
   return (
-    <StatusContext.Provider value={{ status,setStatus, is_active_action ,currentAction,setCurrentAction,next_step}}>
+    <StatusContext.Provider value={{ status,setStatus,currentAction,setCurrentAction,nextStep}}>
       {children}
     </StatusContext.Provider>
   );

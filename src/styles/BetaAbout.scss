@@ -68,6 +68,12 @@
     color:base.$text-color;
     text-align: center;
 }
+.feeling-instruction{
+    padding:5%;
+    font-size: base.$content-size;
+    color:#000000;
+    text-align: center;
+}
 .feeling-button-container{
     display:flex;
     flex-direction: row;

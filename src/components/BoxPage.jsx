@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useStatus } from '../context/StatusContext'; 
 import { useRounds } from '../context/RoundsContext';
 import Rounds from './Rounds'; 
@@ -75,6 +76,10 @@ const BoxPage = () => {
         <h1 className='success_heading'>Congratulations ! <br/>You have now reduced your stress by 25%</h1>
   
     <dotlottie-player src="https://lottie.host/87039642-73bc-489b-ad1c-4d5548031077/CVrTtIp4IZ.json" background="transparent" speed="0.5" style={{width: "300px", height: "300px"}} loop autoplay/>
+    
+    <Link to='/'>
+    <button className="next-button"> Back to Home </button>
+    </Link>
         </>
         
       ) : (

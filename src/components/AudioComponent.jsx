@@ -4,17 +4,17 @@ import { useStatus } from '../context/StatusContext';
 import '../styles/BetaAbout.scss';
 
 const AudioComponent = ({ deviceInfo }) => {
-  const MIN_COUNT = 0;
+
   const MAX_AMPLITUDE = 255;
   const LOG_BASE = 10;
 
-  const { currentAction, next_step, is_active_action, status, setStatus } = useStatus();
+  const { currentAction, nextStep, status, setStatus} = useStatus();
   const [error, setError] = useState(null);
   const [threshold, setThreshold] = useState(30);
   const [counter, setCounter] = useState(4);
   const [isCounting, setIsCounting] = useState(false);
   const [instructions, setInstructions] = useState("Press start when you are ready to begin. You'll do great!");
-  const [intervalId, setIntervalId] = useState(null);
+
 
   const canvasRef = useRef(null);
   const audioCtxRef = useRef(null);
@@ -28,6 +28,25 @@ const AudioComponent = ({ deviceInfo }) => {
 
   useEffect(() => {
     let stream;
+    
+    const init = async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: { deviceId: deviceInfo.deviceId }
+        });
+        audioCtxRef.current = new AudioContext();
+        const source = audioCtxRef.current.createMediaStreamSource(stream);
+        analyserRef.current = audioCtxRef.current.createAnalyser();
+        analyserRef.current.fftSize = 2048;
+        const bufferLength = analyserRef.current.frequencyBinCount;
+        dataArrayRef.current = new Uint8Array(bufferLength);
+        source.connect(analyserRef.current);
+        drawMeter();
+      } catch (error) {
+        console.error('Error accessing user media:', setError(error));
+      }
+    };
+    init();
 
     const drawMeter = () => {
       const canvas = canvasRef.current;
@@ -51,26 +70,6 @@ const AudioComponent = ({ deviceInfo }) => {
         }
       }
     };
-
-    const init = async () => {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          audio: { deviceId: deviceInfo.deviceId }
-        });
-        audioCtxRef.current = new AudioContext();
-        const source = audioCtxRef.current.createMediaStreamSource(stream);
-        analyserRef.current = audioCtxRef.current.createAnalyser();
-        analyserRef.current.fftSize = 2048;
-        const bufferLength = analyserRef.current.frequencyBinCount;
-        dataArrayRef.current = new Uint8Array(bufferLength);
-        source.connect(analyserRef.current);
-        drawMeter();
-      } catch (error) {
-        console.error('Error accessing user media:', setError(error));
-      }
-    };
-    init();
-  
     return () => {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
@@ -78,66 +77,57 @@ const AudioComponent = ({ deviceInfo }) => {
       if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
         audioCtxRef.current.close();
       }
-      if (intervalId) {
-        clearInterval(intervalId);
-        setIntervalId(null);
-      }
     };
-  }, [deviceInfo, intervalId]);
+  }, [deviceInfo]);
 
-  useEffect(() => {
-    if (isCounting) {
-      if (avgRef.current > threshold) {
-        setStatus('BREATHING');
-      } else {
-        setStatus('READY');
-      }
-    }
-  }, [isCounting, threshold, setStatus]);
-
-  useEffect(() => {
-    if (isCounting) {
-      if (counter < MIN_COUNT) {
-        next_step();
-        setCounter(4);
-      }
-    }
-  }, [counter, isCounting, next_step]);
-
-  const checkAndCount = () => {
-    if (isCounting) {
-      const dynamicValue = avgRef.current;
-      if (is_active_action()) {
-        if (dynamicValue > threshold) {
-          setCounter(prevCounter => prevCounter - 1);
-          setInstructions("Nice! You're doin' a great job. 👍");
-        } else {
-          setInstructions(`${currentAction} with your mouth near the microphone`);
-        }
-      } else {
-        if (dynamicValue < threshold) {
-          setCounter(prevCounter => prevCounter - 1);
-          setInstructions(`Way to do that ${currentAction}`);
-        } else {
-          setInstructions(`${currentAction} and try not to make any noise`);
-        }
-      }
-    }
-  };
+ 
   
-
   const startCounting = () => {
     setIsCounting(true);
     setStatus('BREATHING');
-    
-    let intervalRef = setInterval(checkAndCount, 1000);
-    setIntervalId(intervalRef);
+    nextStep(currentAction); 
   };
 
-  const nextButton = () => {
-    setStatus('READY');
-    next_step();
-  };
+
+  useEffect(() => {
+    const checkAndCount = () => {
+      if (isCounting && counter > 0) {
+        const dynamicValue = avgRef.current;
+        const currentActionCopy = currentAction; // Capture currentAction value
+    
+        if (currentActionCopy === null || currentActionCopy === 'INHALE' || currentActionCopy === 'EXHALE') {
+          if (dynamicValue > threshold) {
+            setCounter(prevCounter => prevCounter - 1);
+            setInstructions("Nice! You're doing a great job. 👍");
+            setStatus('BREATHING');
+          } else {
+            setInstructions(`${currentActionCopy} with your mouth near the microphone`);
+            setStatus('READY');
+          }
+        } else if (currentActionCopy === 'HOLD' || currentActionCopy === 'WAIT') {
+          if (dynamicValue < threshold) {
+            setCounter(prevCounter => prevCounter - 1);
+            setInstructions(`Way to do that ${currentActionCopy}`);
+            setStatus('BREATHING');
+          } else {
+            setInstructions(`${currentActionCopy} and try not to make any noise`);
+            setStatus('READY');
+          }
+        }       
+      }
+      else if (counter === 0 ) {
+        setCounter(4); // Reset counter to 4
+        nextStep(currentAction); // Trigger next step
+      }
+    };
+  
+
+      const intervalRef = setInterval(checkAndCount, 1000);
+    
+      return () => clearInterval(intervalRef);
+  
+   
+  }, [isCounting, counter, currentAction, threshold,nextStep,setStatus]);
 
   return (
     <div className='audioContainer'>
@@ -156,9 +146,9 @@ const AudioComponent = ({ deviceInfo }) => {
       
       {(status === 'READY' || status === 'BREATHING') && (
         <>
-        <p className="feeling-label">{instructions}</p>
+        <p className="feeling-instruction">{instructions}</p>
         <button 
-          //disabled={status === 'BREATHING'} 
+          disabled={status === 'BREATHING'}
           className="next-button" 
           onClick={startCounting}
         >
@@ -176,7 +166,7 @@ const AudioComponent = ({ deviceInfo }) => {
       )}
 
       {status === 'AUDIO_DETECTED' && (
-        <button className="next-button" onClick={nextButton}>Next</button>
+        <button className="next-button" onClick={() => {setStatus('READY')}}>Next</button>
       )}
     </div>
   );
