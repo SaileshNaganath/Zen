@@ -88,7 +88,7 @@ const BoxPage = () => {
           {roundsActive ? (
             <>
             <p className='status-heading'>STATUS:  {status}</p>
-              {['READY', 'BREATHING'].includes(status) ? (
+              {['READY', 'BREATHING','FOLLOW INSTRUCTION'].includes(status) ? (
                 <Rounds/>
               ) : (
                 <div className="audio-inputs">

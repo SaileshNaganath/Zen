@@ -9,7 +9,7 @@ const StatusProvider = ({ children }) => {
 
   const [status, setStatus] = useState('READY');
   const [currentAction, setCurrentAction] = useState(null);
-  const { rounds,count_round } = useRounds();
+  const { rounds,count_round ,reset_round } = useRounds();
 
 const nextStep = (currentAction) => {
   switch (currentAction) {
@@ -33,7 +33,7 @@ const nextStep = (currentAction) => {
         if (completed_rounds === total_rounds) {
           setStatus('SUCCESS');
           setCurrentAction(null);
-          
+          reset_round();
         } else {
           setCurrentAction('INHALE');
         }

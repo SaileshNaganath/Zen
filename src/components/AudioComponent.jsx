@@ -102,7 +102,7 @@ const AudioComponent = ({ deviceInfo }) => {
             setStatus('BREATHING');
           } else {
             setInstructions(`${currentActionCopy} with your mouth near the microphone`);
-            setStatus('READY');
+            setStatus('FOLLOW INSTRUCTION');
           }
         } else if (currentActionCopy === 'HOLD' || currentActionCopy === 'WAIT') {
           if (dynamicValue < threshold) {
@@ -111,7 +111,7 @@ const AudioComponent = ({ deviceInfo }) => {
             setStatus('BREATHING');
           } else {
             setInstructions(`${currentActionCopy} and try not to make any noise`);
-            setStatus('READY');
+            setStatus('FOLLOW INSTRUCTION');
           }
         }       
       }
@@ -144,30 +144,44 @@ const AudioComponent = ({ deviceInfo }) => {
       </div>
       )}
       
-      {(status === 'READY' || status === 'BREATHING') && (
+      {status === 'AUDIO_DETECTED' && (
+        <button className="next-button" onClick={() => {setStatus('READY')}}>Next</button>
+      )}
+
+      {status === 'READY' && (
         <>
         <p className="feeling-instruction">{instructions}</p>
-        <button 
-          disabled={status === 'BREATHING'}
-          className="next-button" 
-          onClick={startCounting}
-        >
-          {status === 'BREATHING' ? (
-            <>
-              <span>{currentAction}</span>
-              <br />
-              {counter}
-            </>
-          ) : (
-            'Start'
-          )}
+        <button className="next-button" onClick={startCounting}>
+          Start
         </button>
         </>
       )}
 
-      {status === 'AUDIO_DETECTED' && (
-        <button className="next-button" onClick={() => {setStatus('READY')}}>Next</button>
+      {status === 'BREATHING' && (
+        <>
+        <p className="feeling-instruction">{instructions}</p>
+        <button 
+          disabled
+          className="next-button" 
+        >
+              <span>{currentAction}</span>
+              <br />
+              {counter}
+        </button>
+        </>
       )}
+      {status === 'FOLLOW INSTRUCTION' && (
+        <>
+        <p className="feeling-instruction">{instructions}</p>
+        <button 
+          disabled
+          className="next-button" 
+        >
+             FOLLOW INSTRUCTION
+        </button>
+        </>
+      )}
+
     </div>
   );
 };
