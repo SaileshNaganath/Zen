@@ -1,11 +1,3 @@
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 # Zen
 Box Breathing Integration
 
@@ -46,4 +38,6 @@ To start using the Box Breathing Integration, simply navigate to the "Mindfulnes
 Feedback
 
 We're committed to continuously improving our platform to better serve our users. If you have any feedback or suggestions regarding the Box Breathing Integration or any other feature, please don't hesitate to reach out to us.
+
+![Landing Page](https://github.com/SaileshNaganath/Zen/blob/main/public/Screen%20Shot%202024-05-09%20at%2010.09.47%20PM.png)
 
