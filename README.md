@@ -1,11 +1,11 @@
 # Zen
-Box Breathing Integration
+#Box Breathing Integration
 
-Overview
+#Overview
 
 The Box Breathing Integration is a new feature introduced to enhance mindfulness and relaxation within our platform. This feature allows users to seamlessly incorporate the Box Breathing technique into their workflow, promoting stress reduction, increased focus, and overall well-being.
 
-Key Features
+#Key Features
 
 Seamless Integration: With just a few clicks, users can access the Box Breathing feature directly within our platform.
 
@@ -13,7 +13,7 @@ Mindfulness Made Easy: Utilizing the power of the useContext hook in React, and 
 
 Customizable Settings: Users have the flexibility to adjust breathing intervals and other settings to personalize their mindfulness practice.
 
-How It Works
+#How It Works
 
 Accessing the Feature: Users can access the Box Breathing feature from the main menu of our platform.
 
@@ -23,7 +23,7 @@ Guided Breathing Session: Once settings are selected, users are guided through a
 
 Track Progress: Users can track their progress and view session history to monitor their mindfulness journey.
 
-Benefits
+#Benefits
 
 Stress Reduction: Incorporating Box Breathing into daily workflow can help reduce stress and promote a sense of calm and balance.
 
@@ -31,9 +31,9 @@ Improved Focus: Regular practice of Box Breathing can enhance focus and concentr
 
 Enhanced Well-being: By prioritizing mindfulness, users can experience improved overall well-being and mental clarity.
 
-Get Started
+#Get Started
 
-To start using the Box Breathing Integration, simply navigate to the "Mindfulness" section in the main menu of our platform and follow the on-screen instructions to begin your guided breathing session.
+To start using the Box Breathing Integration, simply navigate to the "Try beta feature" section in the main section of our platform and follow the on-screen instructions to begin your guided breathing session.
 
 Feedback
 
